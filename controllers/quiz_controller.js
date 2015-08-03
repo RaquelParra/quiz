@@ -23,7 +23,13 @@ exports.answer = function(req, res) {
 };
 
 exports.index = function(req, res){
-  models.Quiz.findAll().then(function(quizes){
+      var options = {};
+    options.order = [['pregunta', 'ASC']];
+    if (req.query.search) {
+        var busqueda = '%' + req.query.search.replace(' ', '%') + '%';
+        options.where = {pregunta: {like: busqueda}};
+    }
+  models.Quiz.findAll(options).then(function(quizes){
     res.render('quizes/index.ejs', {quizes: quizes, errors: []});
 }).catch(function(error) {next(error);})
 };
